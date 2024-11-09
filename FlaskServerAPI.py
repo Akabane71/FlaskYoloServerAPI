@@ -2,13 +2,15 @@ import atexit
 import threading
 
 import cv2
-from flask import Flask, Response, render_template, g, request, flash, redirect, url_for
+from flask import Flask, Response, render_template, g, request, flash, redirect, url_for, jsonify
 from torchvision import transforms
 from utils.general import *
 from models.common import *
 import counter
 
-app = Flask(__name__,static_url_path='/static')
+app = Flask(__name__, static_url_path='/static')
+
+Light = counter.LightControl(30)  # 最长10s就熄灭
 
 
 class YOLOv5():
@@ -19,10 +21,10 @@ class YOLOv5():
         self.model.to(self.device)
 
     def draw(self, image, x1, x2, y1, y2, cls, conf):
-        print('x1:', x1)
-        print('y1:', y1)
-        print('x2', x2)
-        print('y2', y2)
+        # print('x1:', x1)
+        # print('y1:', y1)
+        # print('x2', x2)
+        # print('y2', y2)
         color = (0, 255, 0)  # BGR格式，这里表示绿色
         thickness = 2  # 边界框线条粗细
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -46,7 +48,7 @@ class YOLOv5():
 
         return frame_tensor
 
-    def get_frame(self, frame, num):
+    def get_frame(self, frame):
 
         # 图片预处理
         frame_tensor = self.frame_to_tensor(frame)
@@ -74,7 +76,8 @@ class YOLOv5():
                     # 筛别人
                     if cls == 0.0:
                         frame = self.draw(frame, x1, x2, y1, y2, cls, conf)
-                        counter.run(num)
+                        Light.turnOn()
+                        print("灯的状态",Light.state)
 
         return frame
 
@@ -130,7 +133,7 @@ def generate_frames(camera, yolo):
             frame = cv2.resize(frame, (640, 640))  # 解决图像畸变
 
             # 将处理后的视频帧转换为字节流
-            frame = yolo.get_frame(frame, num)
+            frame = yolo.get_frame(frame)
 
             ret, buffer = cv2.imencode('.jpg', frame)
             frame_bytes = buffer.tobytes()
@@ -151,7 +154,7 @@ def release_camera_at_exit():
 atexit.register(release_camera_at_exit)
 
 
-@app.route('/submit',methods=['POST'])  # @ 叫做装饰器 简化一个写法
+@app.route('/submit', methods=['POST'])  # @ 叫做装饰器 简化一个写法
 def submit():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -172,7 +175,6 @@ def login():
     return render_template('login.html')
 
 
-
 @app.route('/video_feed')
 def video_feed():
     camera = get_camera()
@@ -180,10 +182,19 @@ def video_feed():
     return Response(generate_frames(camera, yolo), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
+# 灯光的状态
+@app.route('/lightbulb_status', methods=['GET'])
+def lightbulb_status():
+    LightStatic = Light.checkTime()
+    print(LightStatic)
+    return jsonify(LightStatic)
+
+
 # 处理404错误页面
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=False, port=8080)

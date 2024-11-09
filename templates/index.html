@@ -12,16 +12,15 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
-
         }
 
         h1 {
-            text-align: center; /* 让 h1 元素居中 */
-            color: white; /* 改变字体颜色为白色 */
+            text-align: center;
+            color: white;
             font-size: 80px;
         }
 
-        div{
+        div {
             width: 640px;
             height: 640px;
             border: solid 1px red;
@@ -36,15 +35,24 @@
             height: 640px;
         }
 
-
+        #lightbulb {
+            position: absolute;
+            top: 20px;
+            left: 20px; /* 将灯泡移到页面左侧 */
+            width: 742px;
+            height: 416px;
+            background-image: url('../static/turn_on.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 <body>
     <h1>Live Video Stream</h1>
     <div>
-    <img src="{{ url_for('video_feed') }}" alt="Video Stream">
+        <img src="{{ url_for('video_feed') }}" alt="Video Stream">
     </div>
-</body>
+    <div id="lightbulb"></div>
 
     <script>
         function resizeBackground() {
@@ -54,10 +62,23 @@
             body.style.backgroundSize = windowWidth + 'px ' + windowHeight + 'px';
         }
 
-        // 当窗口大小改变时重新调整背景大小
         window.addEventListener('resize', resizeBackground);
-
-        // 页面加载时调整一次背景大小
         window.addEventListener('load', resizeBackground);
+
+        function checkLightbulbStatus() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/lightbulb_status', true);  // 替换为实际的URL路径
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var isOn = JSON.parse(xhr.responseText);
+                    var lightbulb = document.getElementById('lightbulb');
+                    lightbulb.style.backgroundImage = isOn ? "url('../static/turn_on.png')" : "url('../static/turn_off.png')";
+                }
+            };
+            xhr.send();
+        }
+
+        setInterval(checkLightbulbStatus, 3000); // 每3秒更新一次灯泡状态
     </script>
+</body>
 </html>
