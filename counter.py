@@ -1,4 +1,11 @@
-# 执行控制操作
-def run(num):
-    if num % 10 == 1:
-        print('有人!')
+import threading
+
+
+class LightControl():
+    def __init__(self):
+        self.state = True  # 默认是开启的状态
+        self.lock = threading.Lock()
+        self.lastTime = None  # 最后一次有人出现
+
+
+

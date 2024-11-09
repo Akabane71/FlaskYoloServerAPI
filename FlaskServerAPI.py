@@ -8,7 +8,7 @@ from utils.general import *
 from models.common import *
 import counter
 
-app = Flask(__name__)
+app = Flask(__name__,static_url_path='/static')
 
 
 class YOLOv5():
@@ -151,23 +151,26 @@ def release_camera_at_exit():
 atexit.register(release_camera_at_exit)
 
 
-@app.route('/index')  # @ 叫做装饰器 简化一个写法
-def index():
-    # 返回包含<video>标签的HTML页面
-    return render_template('index.html')
+@app.route('/submit',methods=['POST'])  # @ 叫做装饰器 简化一个写法
+def submit():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        print(username)
+        print(password)
+        if username and password:
+            if username == 'admin' and password == 'admin':
+                # 返回包含<video>标签的HTML页面
+                return render_template('index.html')
+        else:
+            return redirect(url_for('login'))
 
 
 # 登录界面
-@app.route('/',methods=['GET','POST'])
+@app.route('/')
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    if request.method == 'POST':
-        username = request.form.get('username',0)
-        password = request.form.get('password',0)
-        if username == 'admin' and password == 'admin':
-            flash("Login Successful!","Success")
-            return redirect(url_for("/index"))
+    return render_template('login.html')
+
 
 
 @app.route('/video_feed')
@@ -176,6 +179,11 @@ def video_feed():
     yolo = YOLOv5()
     return Response(generate_frames(camera, yolo), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+# 处理404错误页面
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=False, port=8080)
