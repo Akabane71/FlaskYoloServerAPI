@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Stream</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('../static/acg.gy_53.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+        }
+
+        h1 {
+            text-align: center; /* 让 h1 元素居中 */
+            color: white; /* 改变字体颜色为白色 */
+            font-size: 80px;
+        }
+
+        div{
+            width: 640px;
+            height: 640px;
+            border: solid 1px red;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        img {
+            display: inline-block;
+            vertical-align: middle;
+            width: 640px;
+            height: 640px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>Live Video Stream</h1>
+    <div>
+    <img src="{{ url_for('video_feed') }}" alt="Video Stream">
+    </div>
+</body>
+
+    <script>
+        function resizeBackground() {
+            var body = document.querySelector('body');
+            var windowWidth = window.innerWidth;
+            var windowHeight = window.innerHeight;
+            body.style.backgroundSize = windowWidth + 'px ' + windowHeight + 'px';
+        }
+
+        // 当窗口大小改变时重新调整背景大小
+        window.addEventListener('resize', resizeBackground);
+
+        // 页面加载时调整一次背景大小
+        window.addEventListener('load', resizeBackground);
+    </script>
+</html>

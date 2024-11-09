@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #4a90e2, #7b4397);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #fff;
+}
+
+.login-container {
+    background: #ffffff;
+    width: 350px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #333;
+}
+
+.login-container h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #7b4397;
+}
+
+.login-container p {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #7b4397;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    color: #333;
+    background: #f9f9f9;
+}
+
+.input-group input:focus {
+    border-color: #7b4397;
+    box-shadow: 0 0 5px rgba(123, 67, 151, 0.3);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #7b4397;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #4a90e2;
+}
+
+.register-text {
+    font-size: 14px;
+    color: #666;
+    margin-top: 15px;
+}
+
+.register-text a {
+    color: #7b4397;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-text a:hover {
+    color: #4a90e2;
+}
+
+</style>
+<body>
+    <div class="login-container">
+        <h2>Welcome Back!</h2>
+        <p>Please login to your account</p>
+        <!-- 设置action为目标页面的URL，例如dashboard.html -->
+        <form action="index.html" method="POST">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+            <p class="register-text">Don't have an account? <a href="#">Register</a></p>
+        </form>
+    </div>
+</body>
+</html>
