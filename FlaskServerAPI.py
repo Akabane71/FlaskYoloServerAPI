@@ -150,7 +150,6 @@ def release_camera_at_exit():
     camera = get_camera()
     camera.release()
 
-
 atexit.register(release_camera_at_exit)
 
 
