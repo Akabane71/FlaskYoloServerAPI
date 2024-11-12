@@ -13,7 +13,7 @@ app = Flask(__name__, static_url_path='/static')
 Light = counter.LightControl(30)  # 最长10s就熄灭
 
 
-class YOLOv5():
+class YOLOv5:
     def __init__(self, weights='weights/yolov5n.pt'):
         self.weights = weights
         self.device = "cuda" if torch.cuda.is_available() else 'cpu'
